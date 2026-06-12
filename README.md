@@ -21,6 +21,12 @@ Options:
   -V, --version  Print version
 ```
 
+<p align=center>
+
+![your ai slop bores me](./media/0d5.jpg)
+
+</p>
+
 ---
 
 **No artificial intelligence was used in the making of this.**
