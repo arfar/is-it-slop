@@ -1,3 +1,4 @@
+use color_eyre::{Section, eyre::Context};
 use jiff::Timestamp;
 use serde::Deserialize;
 use ureq::Agent;
@@ -13,7 +14,8 @@ pub fn fetch_repo_details(
 ) -> color_eyre::Result<GithubRepoDetails> {
     agent
         .get(String::from("https://api.github.com/repos/") + github_project)
-        .call()?
+        .call()
+        .wrap_err("couldn't fetch repo details, are you sure it exists?")?
         .body_mut()
         .read_json()
         .map_err(color_eyre::Report::from)
