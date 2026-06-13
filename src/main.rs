@@ -85,6 +85,12 @@ fn main() -> color_eyre::Result<()> {
     if let Some(dependencies) = cargo_toml.dependencies {
         look_for_outdated_dependencies(dependencies, &mut num_outdated_dependencies, &agent)?;
     }
+    if let Some(dev_dependencies) = cargo_toml.dev_dependencies {
+        look_for_outdated_dependencies(dev_dependencies, &mut num_outdated_dependencies, &agent)?;
+    }
+    if let Some(build_dependencies) = cargo_toml.build_dependencies {
+        look_for_outdated_dependencies(build_dependencies, &mut num_outdated_dependencies, &agent)?;
+    }
 
     if let Some(workspace) = cargo_toml.workspace {
         if let Some(package) = workspace.package

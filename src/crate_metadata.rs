@@ -5,10 +5,13 @@ use toml::Table;
 use ureq::Agent;
 
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "kebab-case")]
 pub struct CargoToml {
     pub workspace: Option<Workspace>,
     pub package: Option<Package>,
     pub dependencies: Option<Dependencies>,
+    pub dev_dependencies: Option<Dependencies>,
+    pub build_dependencies: Option<Dependencies>,
 }
 
 type Dependencies = Table;
