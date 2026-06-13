@@ -8,6 +8,8 @@ pub struct GithubRepoDetails {
     pub created_at: Timestamp,
 }
 
+static SUSSY_FILES: &[&str] = &["AGENTS.md", "CLAUDE.md"];
+
 pub fn fetch_repo_details(
     github_project: &str,
     agent: &Agent,
@@ -19,4 +21,20 @@ pub fn fetch_repo_details(
         .body_mut()
         .read_json()
         .map_err(color_eyre::Report::from)
+}
+
+pub fn find_sussy_files(github_project: &str, agent: &Agent) -> Vec<String> {
+    SUSSY_FILES
+        .iter()
+        .filter_map(|sussy_file| {
+            agent
+                .get(format!(
+                    "https://raw.githubusercontent.com/{}/HEAD/{}",
+                    github_project, sussy_file
+                ))
+                .call()
+                .is_ok()
+                .then_some(sussy_file.to_string())
+        })
+        .collect()
 }

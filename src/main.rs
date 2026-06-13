@@ -8,7 +8,7 @@ mod github;
 
 use crate::{
     crate_metadata::{fetch_cargo_toml, is_old_edition, look_for_outdated_dependencies},
-    github::fetch_repo_details,
+    github::{fetch_repo_details, find_sussy_files},
 };
 
 #[derive(Parser, Debug)]
@@ -111,8 +111,10 @@ fn main() -> color_eyre::Result<()> {
         }
     }
 
+    let sussy_files = find_sussy_files(github_project, &agent);
+
     let slop_score = num_outdated_dependencies
-        + u16::try_from(slop_score_motivations.len())
+        + u16::try_from(slop_score_motivations.len() + sussy_files.len())
             .wrap_err("THE AMOUNT OF SLOP IS OVERWHELMING!!!")?;
 
     println!("\nslop score: {}", slop_score);
@@ -125,6 +127,12 @@ fn main() -> color_eyre::Result<()> {
             "- using {} outdated dependencies",
             num_outdated_dependencies
         );
+    }
+    if !sussy_files.is_empty() {
+        println!("- sussy files present:");
+        for sussy_file in sussy_files {
+            println!("  - {}", sussy_file);
+        }
     }
 
     if slop_score > 0 {
