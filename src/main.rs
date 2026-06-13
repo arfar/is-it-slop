@@ -1,15 +1,15 @@
 use clap::Parser;
+use color_eyre::eyre::OptionExt;
 use semver::{Version, VersionReq};
 use serde::Deserialize;
 use toml::Table;
 use ureq::Agent;
 
 #[derive(Parser, Debug)]
-#[command(version, about)]
+#[command(version, about, arg_required_else_help = true)]
 struct Args {
-    /// on which project shall we SNIFF OUT THE SLOP??
-    #[arg(value_name = "USER>/<REPO")]
-    github_project: String,
+    /// either <USER>/<REPO> or full URL
+    github_project_or_url: String,
 }
 
 #[derive(Deserialize, Debug)]
@@ -59,7 +59,7 @@ fn find_outdated_dependencies(
     num_outdated_dependencies: &mut u16,
     agent: &Agent,
 ) -> color_eyre::Result<()> {
-    println!("checking for outdated dependencies");
+    println!("\nlooking for outdated dependencies");
 
     for (crate_name, value) in dependencies {
         let version_str = match &value {
@@ -98,13 +98,33 @@ fn find_outdated_dependencies(
 }
 
 fn main() -> color_eyre::Result<()> {
-    color_eyre::install()?;
+    color_eyre::config::HookBuilder::default()
+        .display_env_section(false)
+        .display_location_section(cfg!(debug_assertions))
+        .install()?;
 
     let args = Args::parse();
 
+    let github_project = if args.github_project_or_url.starts_with("http") {
+        let (_, rest) = args
+            .github_project_or_url
+            .split_once("github.com/")
+            .ok_or_eyre("not a GitHub URL!")?;
+
+        let end_index = rest
+            .match_indices('/')
+            .nth(1)
+            .map_or(rest.len(), |(i, _)| i);
+        &rest[..end_index]
+    } else {
+        &args.github_project_or_url
+    };
+
+    println!("checking 'https://github.com/{}'", github_project);
+
     let cargo_toml_raw_url = format!(
         "https://raw.githubusercontent.com/{}/HEAD/Cargo.toml",
-        args.github_project
+        github_project
     );
 
     let agent: Agent = Agent::config_builder()
