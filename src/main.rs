@@ -51,6 +51,9 @@ fn is_old_edition(edition_str: &str) -> bool {
     edition_str.parse::<u16>().unwrap() < 2024
 }
 
+// TODO: do the requests concurrently
+// it's embarrasingly parallell....
+// maybe switch to reqwest and have a tokio runtime..
 fn find_outdated_dependencies(
     dependencies: Dependencies,
     num_outdated_dependencies: &mut u16,
