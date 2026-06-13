@@ -7,7 +7,10 @@ mod crate_metadata;
 mod github;
 
 use crate::{
-    crate_metadata::{fetch_cargo_toml, fetch_gitignore, find_ai_string_in_gitignore, is_old_edition, look_for_outdated_dependencies},
+    crate_metadata::{
+        fetch_cargo_toml, fetch_gitignore, find_ai_string_in_gitignore, is_old_edition,
+        look_for_outdated_dependencies,
+    },
     github::{fetch_repo_details, find_sussy_files},
 };
 
@@ -114,9 +117,12 @@ fn main() -> color_eyre::Result<()> {
     let gitignore = fetch_gitignore(github_project, &agent)?;
 
     let ai_string_in_gitignore_found = find_ai_string_in_gitignore(&gitignore);
-    
+
     if !ai_string_in_gitignore_found.is_empty() {
-        slop_score_motivations.push(format!("found a common ai agent file(s) ({:?}) in .gitignore", ai_string_in_gitignore_found));
+        slop_score_motivations.push(format!(
+            "found a common ai agent file(s) ({:?}) in .gitignore",
+            ai_string_in_gitignore_found
+        ));
     }
 
     let sussy_files = find_sussy_files(github_project, &agent);

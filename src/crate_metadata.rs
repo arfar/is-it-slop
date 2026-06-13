@@ -117,7 +117,6 @@ pub fn fetch_gitignore(github_project: &str, agent: &Agent) -> color_eyre::Resul
         .call()?
         .body_mut()
         .read_to_string()?)
-
 }
 
 pub fn find_ai_string_in_gitignore(gitignore: &str) -> Vec<String> {
