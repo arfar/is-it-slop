@@ -14,8 +14,12 @@ use crate::{
 #[derive(Parser, Debug)]
 #[command(version, about, arg_required_else_help = true)]
 struct Args {
-    /// either <USER>/<REPO> or full URL
+    /// Either <USER>/<REPO> or full URL
     github_project_or_url: String,
+
+    /// Emit non-zero exit code if any slop detected
+    #[arg(long)]
+    check: bool,
 }
 
 fn main() -> color_eyre::Result<()> {
@@ -31,7 +35,7 @@ fn main() -> color_eyre::Result<()> {
 
     let github_project = parse_github_project(&args.github_project_or_url)?;
 
-    println!("checking 'https://github.com/{}'\n", github_project);
+    println!("checking 'https://github.com/{}'", github_project);
 
     let agent: Agent = Agent::config_builder()
         .user_agent(concat!(
@@ -53,7 +57,7 @@ fn main() -> color_eyre::Result<()> {
             .largest(jiff::Unit::Year),
     )?;
 
-    println!("the repo is {:#} old", duration_since_creation);
+    println!("it is {:#} old", duration_since_creation);
 
     const YOUNG_AGE_HOURS: f64 = 24.;
     match duration_since_creation.total((Unit::Hour, &now_utc)) {
@@ -115,6 +119,10 @@ fn main() -> color_eyre::Result<()> {
             "- using {} outdated dependencies",
             num_outdated_dependencies
         );
+    }
+
+    if slop_score > 0 {
+        std::process::exit(1);
     }
 
     Ok(())

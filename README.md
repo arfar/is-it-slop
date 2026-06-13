@@ -19,12 +19,13 @@ This simple command-line tool can check for this.
 ```present cargo run -- -h
 CLI for detecting slop smell
 
-Usage: is-it-slop <GITHUB_PROJECT_OR_URL>
+Usage: is-it-slop [OPTIONS] <GITHUB_PROJECT_OR_URL>
 
 Arguments:
-  <GITHUB_PROJECT_OR_URL>  either <USER>/<REPO> or full URL
+  <GITHUB_PROJECT_OR_URL>  Either <USER>/<REPO> or full URL
 
 Options:
+      --check    Emit non-zero exit code if any slop detected
   -h, --help     Print help
   -V, --version  Print version
 ```
