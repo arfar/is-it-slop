@@ -25,6 +25,7 @@ struct Args {
     check: bool,
 }
 
+#[allow(clippy::too_many_lines)]
 fn main() -> color_eyre::Result<()> {
     color_eyre::config::HookBuilder::default()
         .display_env_section(false)
