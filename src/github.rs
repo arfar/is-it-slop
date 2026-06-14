@@ -8,7 +8,14 @@ pub struct GithubRepoDetails {
     pub created_at: Timestamp,
 }
 
-static SUSSY_FILES: &[&str] = &["AGENTS.md", "CLAUDE.md"];
+static SUSSY_FILES: &[&str] = &[
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".github/copilot-instructions.md",
+    ".cursor/rules",
+    ".codex/rules",
+    ".hermes/soul",
+];
 
 pub fn fetch_repo_details(
     github_project: &str,
@@ -24,6 +31,8 @@ pub fn fetch_repo_details(
 }
 
 pub fn find_sussy_files(github_project: &str, agent: &Agent) -> Vec<String> {
+    println!("checking for sussy files present");
+
     SUSSY_FILES
         .iter()
         .filter_map(|sussy_file| {
@@ -50,28 +59,11 @@ pub fn fetch_gitignore(github_project: &str, agent: &Agent) -> color_eyre::Resul
         .read_to_string()?)
 }
 
-pub fn find_ai_string_in_gitignore(gitignore: &str) -> Vec<String> {
-    println!("checking for AI related strings in .gitignore");
-    let mut common_ai_strings_found = Vec::new();
-    for line in gitignore.lines() {
-        if line.to_ascii_lowercase().contains("claude.md") {
-            common_ai_strings_found.push(line.to_string());
-        }
-        if line.to_ascii_lowercase().contains("agents.md") {
-            common_ai_strings_found.push(line.to_string());
-        }
-        if line.to_ascii_lowercase().contains("copilot-instructions") {
-            common_ai_strings_found.push(line.to_string());
-        }
-        if line.to_ascii_lowercase().contains("cursor/rules") {
-            common_ai_strings_found.push(line.to_string());
-        }
-        if line.to_ascii_lowercase().contains("codex/rules") {
-            common_ai_strings_found.push(line.to_string());
-        }
-        if line.to_ascii_lowercase().contains(".hermes/soul") {
-            common_ai_strings_found.push(line.to_string());
-        }
-    }
-    common_ai_strings_found
+pub fn find_gitignored_sussy_files(gitignore: &str) -> Vec<&str> {
+    println!("checking for sussy files in .gitignore");
+
+    SUSSY_FILES
+        .iter()
+        .filter_map(|sussy_file| gitignore.matches(sussy_file).next())
+        .collect()
 }
