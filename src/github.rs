@@ -38,3 +38,40 @@ pub fn find_sussy_files(github_project: &str, agent: &Agent) -> Vec<String> {
         })
         .collect()
 }
+
+pub fn fetch_gitignore(github_project: &str, agent: &Agent) -> color_eyre::Result<String> {
+    Ok(agent
+        .get(format!(
+            "https://raw.githubusercontent.com/{}/HEAD/.gitignore",
+            github_project
+        ))
+        .call()?
+        .body_mut()
+        .read_to_string()?)
+}
+
+pub fn find_ai_string_in_gitignore(gitignore: &str) -> Vec<String> {
+    println!("checking for AI related strings in .gitignore");
+    let mut common_ai_strings_found = Vec::new();
+    for line in gitignore.lines() {
+        if line.to_ascii_lowercase().contains("claude.md") {
+            common_ai_strings_found.push(line.to_string());
+        }
+        if line.to_ascii_lowercase().contains("agents.md") {
+            common_ai_strings_found.push(line.to_string());
+        }
+        if line.to_ascii_lowercase().contains("copilot-instructions") {
+            common_ai_strings_found.push(line.to_string());
+        }
+        if line.to_ascii_lowercase().contains("cursor/rules") {
+            common_ai_strings_found.push(line.to_string());
+        }
+        if line.to_ascii_lowercase().contains("codex/rules") {
+            common_ai_strings_found.push(line.to_string());
+        }
+        if line.to_ascii_lowercase().contains(".hermes/soul") {
+            common_ai_strings_found.push(line.to_string());
+        }
+    }
+    common_ai_strings_found
+}

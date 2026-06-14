@@ -7,11 +7,8 @@ mod crate_metadata;
 mod github;
 
 use crate::{
-    crate_metadata::{
-        fetch_cargo_toml, fetch_gitignore, find_ai_string_in_gitignore, is_old_edition,
-        look_for_outdated_dependencies,
-    },
-    github::{fetch_repo_details, find_sussy_files},
+    crate_metadata::{fetch_cargo_toml, is_old_edition, look_for_outdated_dependencies},
+    github::{fetch_gitignore, fetch_repo_details, find_ai_string_in_gitignore, find_sussy_files},
 };
 
 #[derive(Parser, Debug)]
